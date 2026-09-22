@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 
 from pyshell.context import ShellContext
-from pyshell.commands import cat, cp, mv, rm, sizeof
+from pyshell.commands import cat, cp, mv, rm, sizeof, echo
 
 
 class TestFileCommands(unittest.TestCase):
@@ -65,6 +65,12 @@ class TestFileCommands(unittest.TestCase):
 
         sizeof.run(["a.txt"], self.context)
         self.assertIn("10 bytes", self.out.getvalue())
+
+    def test_echo_file_write(self):
+        echo.run(["hello", "world", ">", "output.txt"], self.context)
+        output_file = self.root_path / "output.txt"
+        self.assertTrue(output_file.exists())
+        self.assertEqual(output_file.read_text().strip(), "hello world")
 
 
 if __name__ == "__main__":
